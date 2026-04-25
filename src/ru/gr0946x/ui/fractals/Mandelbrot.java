@@ -13,6 +13,14 @@ public class Mandelbrot implements Fractal{
         return sqrt(R2);
     }
 
+    public void setMaxIterations(int maxIterations) {
+        this.maxIterations = Math.max(10, maxIterations);
+    }
+
+    public int getMaxIterations() {
+        return maxIterations;
+    }
+
     @Override
     public float inSetProbability(double x, double y) {
         var c = new Complex(x, y);
