@@ -15,14 +15,14 @@ public class MainWindow extends JFrame {
 
     private final SelectablePanel mainPanel;
     private final Painter painter;
-    private final Fractal mandelbrot;
+    private Mandelbrot mandelbrot;
     private final Converter conv;
     public MainWindow(){
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(800, 650));
         mandelbrot = new Mandelbrot();
         conv = new Converter(-2.0, 1.0, -1.0, 1.0);
-        painter = new FractalPainter(mandelbrot, conv, (value)->{
+        painter = new FractalPainter((x, y) -> mandelbrot.inSetProbability(x, y), conv, (value)->{
             if (value == 1.0) return Color.BLACK;
             var r = (float)abs(sin(5 * value));
             var g = (float)abs(cos(8 * value) * sin (3 * value));
@@ -38,6 +38,10 @@ public class MainWindow extends JFrame {
             var yMax = conv.yScr2Crt(r.y);
             conv.setXShape(xMin, xMax);
             conv.setYShape(yMin, yMax);
+
+            // пункт 10
+            double newWidth = xMax - xMin; // новая ширина фрактала
+            mandelbrot.updateIterationsByZoom(newWidth);
             mainPanel.repaint();
         });
         setContent();
