@@ -1,7 +1,5 @@
 package ru.gr0946x.ui.fractals;
 
-import ru.smak.math.Complex;
-
 import static java.lang.Math.max;
 import static java.lang.Math.sqrt;
 
@@ -19,6 +17,23 @@ public class Mandelbrot implements Fractal{
 
     public int getMaxIterations() {
         return maxIterations;
+    }
+
+    // пункт 10
+    public void updateIterationsByZoom(double currentWidth) { // ширина в координатах фрактала (не в пикслях)
+        double baseWidth = 4.0;
+
+        double zoom = baseWidth / currentWidth;
+
+        if (zoom <= 1.0) {
+            this.maxIterations = 100;
+        } else {
+            // если приблизили, увеличение итераций с помощью логарифма.
+            this.maxIterations = 100 + (int) (500 * Math.log10(zoom)); // значение 200 можно менять(выше->больше итераций)
+        }
+
+        // вывод того, как меняются итерации
+        System.out.println("текущий масштаб: " + (int)zoom + "x. итераций: " + this.maxIterations);
     }
 
     @Override
