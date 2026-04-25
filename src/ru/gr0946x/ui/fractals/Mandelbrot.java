@@ -8,7 +8,7 @@ import static java.lang.Math.sqrt;
 public class Mandelbrot implements Fractal{
 
     private int maxIterations = 100;
-    private double R2 = 4;
+    private final double R2 = 4;
     public double getR(){
         return sqrt(R2);
     }
@@ -34,7 +34,10 @@ public class Mandelbrot implements Fractal{
             // z^2 = (zx + zy*i)^2 = zx2 + 2zx*zy*i + zy2*i^2 = (zx2−zy2) + (2*zx*zy)*i
             // z^2 + c = (zx2−zy2) + x + (2*zx*zy+y)*i
             zy = 2.0 * zx * zy + y;
-            zx = zx2 - zy2;
+            zx = zx2 - zy2 + x;
+
+            zx2 = zx * zx;
+            zy2 = zy * zy;
         }
         return (float)i / maxIterations;
     }
