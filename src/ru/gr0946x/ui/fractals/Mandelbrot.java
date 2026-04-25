@@ -23,12 +23,18 @@ public class Mandelbrot implements Fractal{
 
     @Override
     public float inSetProbability(double x, double y) {
-        var c = new Complex(x, y);
-        var z = new Complex();
+        double zx = 0.0;
+        double zy = 0.0;
+        double zx2 = 0.0;
+        double zy2 = 0.0;
         int i = 0;
-        while (z.getAbsoluteValue2() < R2 && ++i < maxIterations){
-            z.timesAssign(z);
-            z.plusAssign(c);
+        while (zx2 * zy2 < R2 && ++i < maxIterations){
+            // f(z) = z^2 + c
+            // z = (zx + zy*i)
+            // z^2 = (zx + zy*i)^2 = zx2 + 2zx*zy*i + zy2*i^2 = (zx2−zy2) + (2*zx*zy)*i
+            // z^2 + c = (zx2−zy2) + x + (2*zx*zy+y)*i
+            zy = 2.0 * zx * zy + y;
+            zx = zx2 - zy2;
         }
         return (float)i / maxIterations;
     }
