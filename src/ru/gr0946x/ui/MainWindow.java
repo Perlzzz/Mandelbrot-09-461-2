@@ -22,7 +22,7 @@ public class MainWindow extends JFrame {
         setMinimumSize(new Dimension(800, 650));
         mandelbrot = new Mandelbrot();
         conv = new Converter(-2.0, 1.0, -1.0, 1.0);
-        painter = new FractalPainter(mandelbrot, conv, (value)->{
+        painter = new FractalPainter((x, y) -> mandelbrot.inSetProbability(x, y), conv, (value)->{
             if (value == 1.0) return Color.BLACK;
             var r = (float)abs(sin(5 * value));
             var g = (float)abs(cos(8 * value) * sin (3 * value));
