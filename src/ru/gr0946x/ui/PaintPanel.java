@@ -27,9 +27,23 @@ public class PaintPanel extends JPanel {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                // тут логика
+                // Проверка правой кнопки мыши согласно пункту 1 и 8
+                if (SwingUtilities.isRightMouseButton(e)) {
+                    double mouseX = e.getX();
+                    double mouseY = e.getY();
+
+                    // Преобразование экранных координат в комплексные для константы C
+                    double cRe = (mouseX - getWidth() / 2.0) / 100.0;
+                    double cIm = (mouseY - getHeight() / 2.0) / 100.0;
+
+                    openJuliaSetWindow(cRe, cIm);
+                }
             }
         });
+    }
+    private void openJuliaSetWindow(double cRe, double cIm) {
+        JuliaSetWindow juliaWindow = new JuliaSetWindow(cRe, cIm);
+        juliaWindow.setVisible(true);
     }
     @Override
     public void paint(Graphics g){
