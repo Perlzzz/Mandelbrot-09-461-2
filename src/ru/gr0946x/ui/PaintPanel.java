@@ -6,6 +6,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class PaintPanel extends JPanel {
 
@@ -21,8 +23,14 @@ public class PaintPanel extends JPanel {
                 repaint();
             }
         });
+        // слушатель событий мыши
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                // тут логика
+            }
+        });
     }
-
     @Override
     public void paint(Graphics g){
         super.paint(g);

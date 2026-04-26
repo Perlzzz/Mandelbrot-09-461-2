@@ -30,6 +30,31 @@ public class JuliaSetWindow extends JFrame {
             this.cIm = cIm;
             // Инициализируем пустое изображение, заполним его позже
             image = new BufferedImage(800, 600, BufferedImage.TYPE_INT_RGB);
+            renderJuliaSet();
+        }
+        private void renderJuliaSet() {
+            int width = image.getWidth();
+            int height = image.getHeight();
+            double zoom = 1.5;
+
+            for (int x = 0; x < width; x++) {
+                for (int y = 0; y < height; y++) {
+                    double zx = 1.5 * (x - width / 2.0) / (0.5 * zoom * width);
+                    double zy = (y - height / 2.0) / (0.5 * zoom * height);
+                    int iteration = 0;
+                    int maxIterations = 300;
+
+                    while (zx * zx + zy * zy < 4 && iteration < maxIterations) {
+                        double temp = zx * zx - zy * zy + cRe;
+                        zy = 2.0 * zx * zy + cIm;
+                        zx = temp;
+                        iteration++;
+                    }
+
+                    int color = iteration | (iteration << 8);
+                    image.setRGB(x, y, iteration < maxIterations ? color : 0);
+                }
+            }
         }
 
         @Override
