@@ -51,6 +51,13 @@ public class MainWindow extends JFrame {
     private void setContent(){
         var gl = new GroupLayout(getContentPane());
         setLayout(gl);
+
+        var colorSchemeBox = new JComboBox<>(ColorSchemes.values());
+        colorSchemeBox.addActionListener(e -> {
+            selectedColorScheme = (ColorFunction) colorSchemeBox.getSelectedItem();
+            mainPanel.repaint();
+        });
+        
         gl.setVerticalGroup(gl.createSequentialGroup()
                 .addGap(8)
                 .addComponent(mainPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE)
