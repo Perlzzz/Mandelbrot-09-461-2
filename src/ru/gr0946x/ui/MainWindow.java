@@ -57,15 +57,20 @@ public class MainWindow extends JFrame {
             selectedColorScheme = (ColorFunction) colorSchemeBox.getSelectedItem();
             mainPanel.repaint();
         });
-        
+
         gl.setVerticalGroup(gl.createSequentialGroup()
+                .addGap(8)
+                .addComponent(colorSchemeBox, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addGap(8)
                 .addComponent(mainPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE)
                 .addGap(8)
         );
         gl.setHorizontalGroup(gl.createSequentialGroup()
                 .addGap(8)
-                .addComponent(mainPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE)
+                .addGroup(gl.createParallelGroup()
+                        .addComponent(colorSchemeBox, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addComponent(mainPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE)
+                )
                 .addGap(8)
         );
     }
