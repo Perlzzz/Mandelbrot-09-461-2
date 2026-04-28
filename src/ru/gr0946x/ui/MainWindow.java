@@ -8,6 +8,8 @@ import ru.gr0946x.ui.painting.Painter;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import static java.lang.Math.*;
 
@@ -31,6 +33,20 @@ public class MainWindow extends JFrame {
         });
         mainPanel = new SelectablePanel(painter);
         mainPanel.setBackground(Color.WHITE);
+        mainPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (SwingUtilities.isRightMouseButton(e)) {
+                    // Используем наш конвертер conv, чтобы получить точные координаты если нажата правая кнопка
+                    double cRe = conv.xScr2Crt(e.getX());
+                    double cIm = conv.yScr2Crt(e.getY());
+
+                    // открываем окно Жюлиа
+                    JuliaSetWindow juliaWindow = new JuliaSetWindow(cRe, cIm);
+                    juliaWindow.setVisible(true);
+                }
+            }
+        });
         mainPanel.addSelectListener((r)->{
             var xMin = conv.xScr2Crt(r.x);
             var xMax = conv.xScr2Crt(r.x + r.width);
