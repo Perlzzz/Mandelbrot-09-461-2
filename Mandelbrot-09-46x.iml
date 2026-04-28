@@ -9,5 +9,15 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Math" level="project" />
     <orderEntry type="library" name="convertation" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="file://$USER_HOME$/Downloads/1lab-main 4/out/artifacts/SecondLab_jar" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+        <jarDirectory url="file://$USER_HOME$/Downloads/1lab-main 4/out/artifacts/SecondLab_jar" recursive="false" />
+      </library>
+    </orderEntry>
   </component>
 </module>
