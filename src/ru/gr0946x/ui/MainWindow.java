@@ -13,6 +13,9 @@ import java.awt.event.MouseEvent;
 
 import static java.lang.Math.*;
 
+import java.util.ArrayDeque;
+import javax.swing.KeyStroke;
+
 public class MainWindow extends JFrame {
 
     private final SelectablePanel mainPanel;
@@ -48,6 +51,7 @@ public class MainWindow extends JFrame {
             }
         });
         mainPanel.addSelectListener((r)->{
+            pushHistory(); // сохраняем перед изменением
             var xMin = conv.xScr2Crt(r.x);
             var xMax = conv.xScr2Crt(r.x + r.width);
             var yMin = conv.yScr2Crt(r.y + r.height);
@@ -60,8 +64,23 @@ public class MainWindow extends JFrame {
             mandelbrot.updateIterationsByZoom(newWidth);
             mainPanel.repaint();
         });
+        setupMenu();
         setContent();
     }
+
+    // каждый элемент — снимок состояния: xMin, xMax, yMin, yMax
+    private final ArrayDeque<double[]> history = new ArrayDeque<>();
+
+    private void pushHistory() {
+        // сохраняем текущее состояние перед каждым зумом/сдвигом
+        history.push(new double[]{
+                conv.getXMin(), conv.getXMax(),
+                conv.getYMin(), conv.getYMax()
+        });
+        // ограничиваем историю 100 шагами (пункт 7 лабы)
+        if (history.size() > 100) history.removeLast();
+    }
+
 
     private void setupMenu() {
         JMenuBar menuBar = new JMenuBar();
@@ -87,6 +106,19 @@ public class MainWindow extends JFrame {
 
         // Правка
         JMenu editMenu = new JMenu("Правка");
+
+        JMenuItem undo = new JMenuItem("Отменить");
+        undo.setAccelerator(KeyStroke.getKeyStroke("ctrl Z")); // Ctrl+Z
+        undo.addActionListener(e -> {
+            if (!history.isEmpty()) {
+                double[] prev = history.pop();
+                conv.setXShape(prev[0], prev[1]);
+                conv.setYShape(prev[2], prev[3]);
+                mainPanel.repaint();
+            }
+        });
+        editMenu.add(undo);
+
 
         menuBar.add(fileMenu);
         menuBar.add(editMenu);
