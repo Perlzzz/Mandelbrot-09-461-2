@@ -63,6 +63,18 @@ public class MainWindow extends JFrame {
         setContent();
     }
 
+    private void setupMenu() {
+        JMenuBar menuBar = new JMenuBar();
+
+        JMenu fileMenu = new JMenu("Файл");
+        JMenu editMenu = new JMenu("Правка");
+
+        menuBar.add(fileMenu);
+        menuBar.add(editMenu);
+
+        setJMenuBar(menuBar);
+    }
+
     private void setContent(){
         var gl = new GroupLayout(getContentPane());
         setLayout(gl);
