@@ -66,12 +66,30 @@ public class MainWindow extends JFrame {
     private void setupMenu() {
         JMenuBar menuBar = new JMenuBar();
 
+        // файл
         JMenu fileMenu = new JMenu("Файл");
+        JMenuItem saveFrac = new JMenuItem("Сохранить как .frac");
+        JMenuItem saveJpg = new JMenuItem("Сохранить как JPG");
+        JMenuItem savePng = new JMenuItem("Сохранить как PNG");
+        JMenuItem open = new JMenuItem("Открыть .frac");
+
+        // заглушки — ActionListener-ы добавят участники 1 и 2
+        saveFrac.addActionListener(e -> { /* TODO: участник 1 */ });
+        saveJpg.addActionListener(e ->  { /* TODO: участник 2 */ });
+        savePng.addActionListener(e ->  { /* TODO: участник 2 */ });
+        open.addActionListener(e ->     { /* TODO: участник 1 */ });
+
+        fileMenu.add(saveFrac);
+        fileMenu.add(saveJpg);
+        fileMenu.add(savePng);
+        fileMenu.addSeparator();
+        fileMenu.add(open);
+
+        // Правка
         JMenu editMenu = new JMenu("Правка");
 
         menuBar.add(fileMenu);
         menuBar.add(editMenu);
-
         setJMenuBar(menuBar);
     }
 
