@@ -59,6 +59,19 @@ public class MainWindow extends JFrame {
             conv.setXShape(xMin, xMax);
             conv.setYShape(yMin, yMax);
 
+            // фикс пропорций — подгоняем Y под соотношение сторон панели
+            double panelRatio = (double) mainPanel.getWidth() / mainPanel.getHeight();
+            double fractalWidth = xMax - xMin;
+            double fractalHeight = fractalWidth / panelRatio;
+            double yCenter = (yMin + yMax) / 2.0;
+            yMin = yCenter - fractalHeight / 2.0;
+            yMax = yCenter + fractalHeight / 2.0;
+
+            conv.setXShape(xMin, xMax);
+            conv.setYShape(yMin, yMax);
+            mandelbrot.updateIterationsByZoom(fractalWidth);
+            mainPanel.repaint();
+
             // пункт 10
             double newWidth = xMax - xMin; // новая ширина фрактала
             mandelbrot.updateIterationsByZoom(newWidth);
