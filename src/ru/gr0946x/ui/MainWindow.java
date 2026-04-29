@@ -1,6 +1,8 @@
 package ru.gr0946x.ui;
 
 import ru.gr0946x.Converter;
+import ru.gr0946x.ui.fractals.ColorFunction;
+import ru.gr0946x.ui.fractals.ColorSchemes;
 import ru.gr0946x.ui.fractals.Fractal;
 import ru.gr0946x.ui.fractals.Mandelbrot;
 import ru.gr0946x.ui.painting.FractalPainter;
@@ -19,18 +21,17 @@ public class MainWindow extends JFrame {
     private final Painter painter;
     private Mandelbrot mandelbrot;
     private final Converter conv;
+    private ColorFunction selectedColorScheme = ColorSchemes.CLASSIC;
     public MainWindow(){
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(800, 650));
         mandelbrot = new Mandelbrot();
         conv = new Converter(-2.0, 1.0, -1.0, 1.0);
-        painter = new FractalPainter((x, y) -> mandelbrot.inSetProbability(x, y), conv, (value)->{
-            if (value == 1.0) return Color.BLACK;
-            var r = (float)abs(sin(5 * value));
-            var g = (float)abs(cos(8 * value) * sin (3 * value));
-            var b = (float)abs((sin(7 * value) + cos(15 * value)) / 2f);
-            return new Color(r, g, b);
-        });
+        painter = new FractalPainter(
+                (x, y) -> mandelbrot.inSetProbability(x, y),
+                conv,
+                (value) -> selectedColorScheme.getColor(value)
+        );
         mainPanel = new SelectablePanel(painter);
         mainPanel.setBackground(Color.WHITE);
         mainPanel.addMouseListener(new MouseAdapter() {
@@ -66,14 +67,26 @@ public class MainWindow extends JFrame {
     private void setContent(){
         var gl = new GroupLayout(getContentPane());
         setLayout(gl);
+
+        var colorSchemeBox = new JComboBox<>(ColorSchemes.values());
+        colorSchemeBox.addActionListener(e -> {
+            selectedColorScheme = (ColorFunction) colorSchemeBox.getSelectedItem();
+            mainPanel.repaint();
+        });
+
         gl.setVerticalGroup(gl.createSequentialGroup()
+                .addGap(8)
+                .addComponent(colorSchemeBox, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addGap(8)
                 .addComponent(mainPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE)
                 .addGap(8)
         );
         gl.setHorizontalGroup(gl.createSequentialGroup()
                 .addGap(8)
-                .addComponent(mainPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE)
+                .addGroup(gl.createParallelGroup()
+                        .addComponent(colorSchemeBox, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addComponent(mainPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE)
+                )
                 .addGap(8)
         );
     }
