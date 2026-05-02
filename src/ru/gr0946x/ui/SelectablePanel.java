@@ -78,7 +78,7 @@ public class SelectablePanel extends PaintPanel{
     }
 
     private void paintSelectedRect(){
-        if (g != null){
+        if (g != null && rect != null){
             g.setXORMode(Color.WHITE);
             g.setColor(Color.BLACK);
             g.drawRect(
