@@ -37,20 +37,6 @@ public class MainWindow extends JFrame {
         );
         mainPanel = new SelectablePanel(painter);
         mainPanel.setBackground(Color.WHITE);
-        mainPanel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                if (SwingUtilities.isRightMouseButton(e)) {
-                    // Используем наш конвертер conv, чтобы получить точные координаты если нажата правая кнопка
-                    double cRe = conv.xScr2Crt(e.getX());
-                    double cIm = conv.yScr2Crt(e.getY());
-
-                    // открываем окно Жюлиа
-                    JuliaSetWindow juliaWindow = new JuliaSetWindow(cRe, cIm);
-                    juliaWindow.setVisible(true);
-                }
-            }
-        });
         mainPanel.addSelectListener((r)->{
             pushHistory(); // сохраняем перед изменением
             var xMin = conv.xScr2Crt(r.x);
