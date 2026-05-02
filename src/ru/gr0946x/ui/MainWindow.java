@@ -93,7 +93,7 @@ public class MainWindow extends JFrame {
         JMenuItem savePng = new JMenuItem("Сохранить как PNG");
         JMenuItem open = new JMenuItem("Открыть .frac");
 
-        FractalSaver saver = new FractalSaver(this, conv, mandelbrot, (FractalPainter) painter);
+        FractalSaver saver = new FractalSaver(this, conv, mandelbrot, (FractalPainter) painter, mainPanel);
 
         saveFrac.addActionListener(e -> saver.saveFrac());
         saveJpg.addActionListener(e ->  saver.saveImage("jpg"));
