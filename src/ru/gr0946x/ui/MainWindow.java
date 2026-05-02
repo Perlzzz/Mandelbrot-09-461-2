@@ -6,6 +6,7 @@ import ru.gr0946x.ui.fractals.ColorSchemes;
 import ru.gr0946x.ui.fractals.Fractal;
 import ru.gr0946x.ui.fractals.Mandelbrot;
 import ru.gr0946x.ui.painting.FractalPainter;
+import ru.gr0946x.ui.painting.FractalSaver;
 import ru.gr0946x.ui.painting.Painter;
 
 import javax.swing.*;
@@ -92,11 +93,11 @@ public class MainWindow extends JFrame {
         JMenuItem savePng = new JMenuItem("Сохранить как PNG");
         JMenuItem open = new JMenuItem("Открыть .frac");
 
-        // заглушки — ActionListener-ы добавят участники 1 и 2
-        saveFrac.addActionListener(e -> { /* TODO: участник 1 */ });
-        saveJpg.addActionListener(e ->  { /* TODO: участник 2 */ });
-        savePng.addActionListener(e ->  { /* TODO: участник 2 */ });
-        open.addActionListener(e ->     { /* TODO: участник 1 */ });
+        FractalSaver saver = new FractalSaver(this, conv, mandelbrot, (FractalPainter) painter);
+
+        saveFrac.addActionListener(e -> saver.saveFrac());
+        saveJpg.addActionListener(e ->  saver.saveImage("jpg"));
+        savePng.addActionListener(e ->  saver.saveImage("png"));
 
         fileMenu.add(saveFrac);
         fileMenu.add(saveJpg);
