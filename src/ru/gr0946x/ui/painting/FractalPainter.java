@@ -3,6 +3,7 @@ package ru.gr0946x.ui.painting;
 import ru.gr0946x.Converter;
 import ru.gr0946x.ui.fractals.ColorFunction;
 import ru.gr0946x.ui.fractals.Fractal;
+import javax.swing.SwingUtilities;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -20,6 +21,10 @@ public class FractalPainter implements Painter{
 
     private final int threadCount = Runtime.getRuntime().availableProcessors();
     private final ExecutorService executor = Executors.newFixedThreadPool(threadCount);
+
+    private volatile BufferedImage lastImage = null;
+    private volatile boolean rendering = false;
+
     @Override
     public int getWidth() {
         return conv.getWidth();
@@ -51,16 +56,18 @@ public class FractalPainter implements Painter{
     }
 
     @Override
-    public void paint(Graphics g) {
+    public void renderAsync(Runnable oneDone) {
+        if (rendering) return;
+        rendering = true;
+
         var w = getWidth();
         var h = getHeight();
 
+        if (w <= 0 || h <= 0) {rendering = false;return;}
+
         // рисуем в буфер, а не сразу на экран
         BufferedImage image = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
-
-//        ExecutorService executor = Executors.newFixedThreadPool(threadCount);
         List<Future<?>> futures = new ArrayList<>();
-
         int chunkHeight = h / threadCount;
 
         System.out.println("=== Начало отрисовки. Потоков: " + threadCount + " ===");
@@ -79,19 +86,32 @@ public class FractalPainter implements Painter{
                         image.setRGB(i, j, colorFunction.getColor(res).getRGB());
                     }
                 }
+                System.out.println("Поток [" + Thread.currentThread().getName() + "] завершён ✓");
             }));
         }
 
-        for (Future<?> f : futures) {
-            try { f.get(); }
-            catch (Exception e) { e.printStackTrace(); }
-        }
+        executor.submit(() -> {
+            for (Future<?> f : futures) {
+                try { f.get(); }
+                catch (Exception e) { e.printStackTrace(); }
+            }
 
-        executor.shutdown();
-        long elapsed = System.currentTimeMillis() - startTime;
-        System.out.println("=== Отрисовка завершена за " + elapsed + " мс ===\n");
+            long elapsed = System.currentTimeMillis() - startTime;
+            System.out.println("=== Отрисовка завершена за " + elapsed + " мс ===\n");
 
-        g.drawImage(image, 0, 0, null);
+            lastImage = image;
+            rendering = false;
+            // возвращаемся в поток Swing для repaint
+            SwingUtilities.invokeLater(oneDone);
+        });
+//        executor.shutdown();
+    }
+        @Override
+        public void paint(Graphics g) {
+            // показываем последний готовый кадр
+            if (lastImage != null) {
+                g.drawImage(lastImage, 0, 0, null);
+            }
         }
 
     }

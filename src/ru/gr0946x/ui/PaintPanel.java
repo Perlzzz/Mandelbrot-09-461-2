@@ -5,10 +5,7 @@ import ru.gr0946x.ui.painting.Painter;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 
 public class PaintPanel extends JPanel {
 
@@ -23,7 +20,12 @@ public class PaintPanel extends JPanel {
                 super.componentResized(e);
                 painter.setWidth(getWidth());
                 painter.setHeight(getHeight());
-                repaint();
+//                repaint();
+                if (painter instanceof FractalPainter fp) {
+                    fp.renderAsync(() -> repaint());
+                } else {
+                    repaint();
+                }
             }
         });
         // слушатель событий мыши
@@ -78,6 +80,8 @@ public class PaintPanel extends JPanel {
         JuliaSetWindow juliaWindow = new JuliaSetWindow(cRe, cIm);
         juliaWindow.setVisible(true);
     }
+
+
     @Override
     public void paint(Graphics g){
         super.paint(g);
