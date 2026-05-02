@@ -5,6 +5,7 @@ import ru.gr0946x.ui.painting.Painter;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import javax.swing.SwingUtilities;
 
 public class SelectablePanel extends PaintPanel{
     private SelectedRect rect = null;
@@ -26,25 +27,32 @@ public class SelectablePanel extends PaintPanel{
             @Override
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
-                rect = new SelectedRect(e.getX(), e.getY());
-                paintSelectedRect();
+                if (SwingUtilities.isLeftMouseButton(e)) {
+                    rect = new SelectedRect(e.getX(), e.getY());
+                    paintSelectedRect();
+                }
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
                 super.mouseReleased(e);
-                paintSelectedRect();
-                for (var handler : selectHandlers) {
-                    handler.onSelect(new Rectangle(
-                            rect.getUpperLeft().x,
-                            rect.getUpperLeft().y,
-                            rect.getWidth(),
-                            rect.getHeight()
-                            )
-                    );
-                }
-                rect = null;
+                // обрабатываем зум только для левой кнопки и если рамка существует
+                if (SwingUtilities.isLeftMouseButton(e) && rect != null) {
+                    paintSelectedRect();
 
+                    // защита от микро-кликов, если рамка слишком мала, не зумим
+                    if (rect.getWidth() > 5 && rect.getHeight() > 5) {
+                        for (var handler : selectHandlers) {
+                            handler.onSelect(new Rectangle(
+                                    rect.getUpperLeft().x,
+                                    rect.getUpperLeft().y,
+                                    rect.getWidth(),
+                                    rect.getHeight()
+                            ));
+                        }
+                    }
+                    rect = null;
+                }
             }
         });
 
@@ -70,7 +78,7 @@ public class SelectablePanel extends PaintPanel{
     }
 
     private void paintSelectedRect(){
-        if (g != null){
+        if (g != null && rect != null){
             g.setXORMode(Color.WHITE);
             g.setColor(Color.BLACK);
             g.drawRect(
