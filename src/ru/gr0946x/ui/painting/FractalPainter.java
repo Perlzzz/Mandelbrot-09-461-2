@@ -46,6 +46,10 @@ public class FractalPainter implements Painter{
         this.colorFunction = cf;
     }
 
+    public Converter getConverter() {
+        return conv;
+    }
+
     @Override
     public void paint(Graphics g) {
         var w = getWidth();
