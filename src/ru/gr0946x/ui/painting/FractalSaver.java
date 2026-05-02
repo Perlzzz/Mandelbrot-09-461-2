@@ -17,12 +17,14 @@ public class FractalSaver {
     private final Converter conv;
     private final Mandelbrot mandelbrot;
     private final FractalPainter painter;
+    private final JPanel panel;
 
-    public FractalSaver(JFrame parent, Converter conv, Mandelbrot mandelbrot, FractalPainter painter) {
+    public FractalSaver(JFrame parent, Converter conv, Mandelbrot mandelbrot, FractalPainter painter, JPanel panel) {
         this.parent = parent;
         this.conv = conv;
         this.mandelbrot = mandelbrot;
         this.painter = painter;
+        this.panel = panel;
     }
 
     /** Часть 2: Сохранение параметров фрактала в .frac файл */
@@ -159,9 +161,13 @@ public class FractalSaver {
             painter.getConverter().setXShape(xMin, xMax);
             painter.getConverter().setYShape(yMin, yMax);
 
+
             JOptionPane.showMessageDialog(parent,
                     "Открыто: " + file.getName(),
                     "Успех", JOptionPane.INFORMATION_MESSAGE);
+
+            panel.repaint();
+            System.out.println("Загружено: xMin=" + xMin + " xMax=" + xMax + " yMin=" + yMin + " yMax=" + yMax);
         } catch (IOException | NumberFormatException e) {
             JOptionPane.showMessageDialog(parent,
                     "Ошибка открытия: " + e.getMessage(),
