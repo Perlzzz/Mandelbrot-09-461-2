@@ -19,7 +19,7 @@ public class FractalPainter implements Painter{
     private final ColorFunction colorFunction;
 
     private final int threadCount = Runtime.getRuntime().availableProcessors();
-
+    private final ExecutorService executor = Executors.newFixedThreadPool(threadCount);
     @Override
     public int getWidth() {
         return conv.getWidth();
@@ -54,7 +54,7 @@ public class FractalPainter implements Painter{
         // рисуем в буфер, а не сразу на экран
         BufferedImage image = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
 
-        ExecutorService executor = Executors.newFixedThreadPool(threadCount);
+//        ExecutorService executor = Executors.newFixedThreadPool(threadCount);
         List<Future<?>> futures = new ArrayList<>();
 
         int chunkHeight = h / threadCount;
