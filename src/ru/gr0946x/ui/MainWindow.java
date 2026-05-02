@@ -38,6 +38,54 @@ public class MainWindow extends JFrame {
         );
         mainPanel = new SelectablePanel(painter);
         mainPanel.setBackground(Color.WHITE);
+        // Колёсико мыши — масштабирование
+        mainPanel.addMouseWheelListener(e -> {
+            pushHistory();
+            double factor = (e.getWheelRotation() < 0) ? 0.9 : 1.1;
+            double xCenter = conv.xScr2Crt(e.getX());
+            double yCenter = conv.yScr2Crt(e.getY());
+            double xMin = xCenter + (conv.getXMin() - xCenter) * factor;
+            double xMax = xCenter + (conv.getXMax() - xCenter) * factor;
+            double yMin = yCenter + (conv.getYMin() - yCenter) * factor;
+            double yMax = yCenter + (conv.getYMax() - yCenter) * factor;
+            conv.setXShape(xMin, xMax);
+            conv.setYShape(yMin, yMax);
+            mandelbrot.updateIterationsByZoom(xMax - xMin);
+            mainPanel.repaint();
+        });
+
+// Правая кнопка мыши — сдвиг
+        mainPanel.addMouseListener(new MouseAdapter() {
+            private int lastX, lastY;
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (e.getButton() == MouseEvent.BUTTON3) {
+                    lastX = e.getX();
+                    lastY = e.getY();
+                    pushHistory();
+                }
+            }
+        });
+
+        mainPanel.addMouseMotionListener(new MouseAdapter() {
+            private int lastX, lastY;
+
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                if (SwingUtilities.isRightMouseButton(e)) {
+                    int dx = e.getX() - lastX;
+                    int dy = e.getY() - lastY;
+                    double shiftX = conv.xScr2Crt(0) - conv.xScr2Crt(dx);
+                    double shiftY = conv.yScr2Crt(0) - conv.yScr2Crt(dy);
+                    conv.setXShape(conv.getXMin() + shiftX, conv.getXMax() + shiftX);
+                    conv.setYShape(conv.getYMin() + shiftY, conv.getYMax() + shiftY);
+                    lastX = e.getX();
+                    lastY = e.getY();
+                    mainPanel.repaint();
+                }
+            }
+        });
         mainPanel.addSelectListener((r)->{
             pushHistory(); // сохраняем перед изменением
             var xMin = conv.xScr2Crt(r.x);
