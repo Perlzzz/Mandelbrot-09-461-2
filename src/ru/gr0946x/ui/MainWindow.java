@@ -98,6 +98,7 @@ public class MainWindow extends JFrame {
         saveFrac.addActionListener(e -> saver.saveFrac());
         saveJpg.addActionListener(e ->  saver.saveImage("jpg"));
         savePng.addActionListener(e ->  saver.saveImage("png"));
+        open.addActionListener(e -> saver.openFrac());
 
         fileMenu.add(saveFrac);
         fileMenu.add(saveJpg);

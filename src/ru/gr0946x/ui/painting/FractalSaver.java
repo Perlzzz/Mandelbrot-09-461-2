@@ -132,4 +132,40 @@ public class FractalSaver {
         }
         return new File(file.getParentFile(), name);
     }
+    public void openFrac() {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setDialogTitle("Открыть фрактал");
+        chooser.setFileFilter(new FileNameExtensionFilter("Файл фрактала (*.frac)", "frac"));
+        chooser.setAcceptAllFileFilterUsed(false);
+
+        if (chooser.showOpenDialog(parent) != JFileChooser.APPROVE_OPTION) return;
+
+        File file = chooser.getSelectedFile();
+        Properties props = new Properties();
+
+        try (FileInputStream fis = new FileInputStream(file)) {
+            props.load(fis);
+            double xMin    = Double.parseDouble(props.getProperty("xMin"));
+            double xMax    = Double.parseDouble(props.getProperty("xMax"));
+            double yMin    = Double.parseDouble(props.getProperty("yMin"));
+            double yMax    = Double.parseDouble(props.getProperty("yMax"));
+            int    maxIter = Integer.parseInt(props.getProperty("maxIter"));
+
+            conv.setXShape(xMin, xMax);
+            conv.setYShape(yMin, yMax);
+            mandelbrot.setMaxIterations(maxIter);
+
+            // перерисовываем фрактал
+            painter.getConverter().setXShape(xMin, xMax);
+            painter.getConverter().setYShape(yMin, yMax);
+
+            JOptionPane.showMessageDialog(parent,
+                    "Открыто: " + file.getName(),
+                    "Успех", JOptionPane.INFORMATION_MESSAGE);
+        } catch (IOException | NumberFormatException e) {
+            JOptionPane.showMessageDialog(parent,
+                    "Ошибка открытия: " + e.getMessage(),
+                    "Ошибка", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 }
