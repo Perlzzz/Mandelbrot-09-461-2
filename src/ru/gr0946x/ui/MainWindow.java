@@ -7,6 +7,7 @@ import ru.gr0946x.ui.fractals.ColorSchemes;
 import ru.gr0946x.ui.fractals.Fractal;
 import ru.gr0946x.ui.fractals.Mandelbrot;
 import ru.gr0946x.ui.painting.FractalPainter;
+import ru.gr0946x.ui.painting.FractalSaver;
 import ru.gr0946x.ui.painting.Painter;
 
 import javax.swing.*;
@@ -59,13 +60,12 @@ public class MainWindow extends JFrame {
             conv.setXShape(xMin, xMax);
             conv.setYShape(yMin, yMax);
             mandelbrot.updateIterationsByZoom(fractalWidth);
-            mainPanel.repaint();
-
+            ((FractalPainter) painter).renderAsync(() -> mainPanel.repaint());
             // пункт 10
-            double newWidth = xMax - xMin; // новая ширина фрактала
-            mandelbrot.updateIterationsByZoom(newWidth);
-            mainPanel.repaint();
-        });
+//            double newWidth = xMax - xMin; // новая ширина фрактала
+//            mandelbrot.updateIterationsByZoom(newWidth);
+//            ((FractalPainter) painter).renderAsync(() -> mainPanel.repaint());
+            });
         setupMenu();
         setContent();
     }
@@ -94,11 +94,12 @@ public class MainWindow extends JFrame {
         JMenuItem savePng = new JMenuItem("Сохранить как PNG");
         JMenuItem open = new JMenuItem("Открыть .frac");
 
-        // заглушки — ActionListener-ы добавят участники 1 и 2
-        saveFrac.addActionListener(e -> { /* TODO: участник 1 */ });
-        saveJpg.addActionListener(e ->  { /* TODO: участник 2 */ });
-        savePng.addActionListener(e ->  { /* TODO: участник 2 */ });
-        open.addActionListener(e ->     { /* TODO: участник 1 */ });
+        FractalSaver saver = new FractalSaver(this, conv, mandelbrot, (FractalPainter) painter, mainPanel);
+
+        saveFrac.addActionListener(e -> saver.saveFrac());
+        saveJpg.addActionListener(e ->  saver.saveImage("jpg"));
+        savePng.addActionListener(e ->  saver.saveImage("png"));
+        open.addActionListener(e -> saver.openFrac());
 
         fileMenu.add(saveFrac);
         fileMenu.add(saveJpg);
@@ -116,8 +117,7 @@ public class MainWindow extends JFrame {
                 double[] prev = history.pop();
                 conv.setXShape(prev[0], prev[1]);
                 conv.setYShape(prev[2], prev[3]);
-                mainPanel.repaint();
-            }
+                ((FractalPainter) painter).renderAsync(() -> mainPanel.repaint());            }
         });
         editMenu.add(undo);
 
@@ -144,8 +144,7 @@ public class MainWindow extends JFrame {
         var colorSchemeBox = new JComboBox<>(ColorSchemes.values());
         colorSchemeBox.addActionListener(e -> {
             selectedColorScheme = (ColorFunction) colorSchemeBox.getSelectedItem();
-            mainPanel.repaint();
-        });
+            ((FractalPainter) painter).renderAsync(() -> mainPanel.repaint());        });
 
         gl.setVerticalGroup(gl.createSequentialGroup()
                 .addGap(8)
