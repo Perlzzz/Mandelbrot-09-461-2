@@ -48,8 +48,14 @@ public class ExcursionWindow extends JDialog {
             int idx = frameList.getSelectedIndex();
             if (idx != -1) {
                 listModel.remove(idx);
+                // Синхронизируем менеджер со списком
+                List<KeyFrame> currentFrames = animationManager.getKeyFrames();
                 animationManager.clearKeyFrames();
-                // пересобираем animationManager из оставшихся строк списка
+                for (int i = 0; i < listModel.size(); i++) {
+                    if (i < currentFrames.size() && i != idx) {
+                        animationManager.addKeyFrame(currentFrames.get(i));
+                    }
+                }
             } else {
                 JOptionPane.showMessageDialog(this,
                         "Выберите кадр для удаления!",
