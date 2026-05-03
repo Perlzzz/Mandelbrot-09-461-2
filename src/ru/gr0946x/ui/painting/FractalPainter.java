@@ -19,6 +19,7 @@ public class FractalPainter implements Painter{
     private final ColorFunction colorFunction;
 
     private final int threadCount = Runtime.getRuntime().availableProcessors();
+    private final ExecutorService executor = Executors.newFixedThreadPool(threadCount);
 
     @Override
     public int getWidth() {
@@ -55,20 +56,19 @@ public class FractalPainter implements Painter{
         var w = getWidth();
         var h = getHeight();
 
-        // рисуем в буфер, а не сразу на экран
+        if (w <= 0 || h <= 0) return;
+
+        // рисуем в буфер
         BufferedImage image = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
 
-        ExecutorService executor = Executors.newFixedThreadPool(threadCount);
         List<Future<?>> futures = new ArrayList<>();
-
-        int chunkHeight = h / threadCount;
-
-        System.out.println("=== Начало отрисовки. Потоков: " + threadCount + " ===");
-        long startTime = System.currentTimeMillis();
+        int chunkHeight = Math.max(1, h / threadCount);
 
         for (int t = 0; t < threadCount; t++) {
             final int startY = t * chunkHeight;
-            final int endY = (t == threadCount - 1) ? h : startY + chunkHeight;
+            final int endY = (t == threadCount - 1) ? h : Math.min(h, startY + chunkHeight);
+
+            if (startY >= h) break;
 
             futures.add(executor.submit(() -> {
                 for (int j = startY; j < endY; j++) {
@@ -87,12 +87,10 @@ public class FractalPainter implements Painter{
             catch (Exception e) { e.printStackTrace(); }
         }
 
-        executor.shutdown();
-        long elapsed = System.currentTimeMillis() - startTime;
-        System.out.println("=== Отрисовка завершена за " + elapsed + " мс ===\n");
-
         g.drawImage(image, 0, 0, null);
-        }
-
     }
 
+    public void shutdown() {
+        executor.shutdown();
+    }
+}
