@@ -19,5 +19,7 @@
         <jarDirectory url="file://$USER_HOME$/Downloads/1lab-main 4/out/artifacts/SecondLab_jar" recursive="false" />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="jcodec-0.2.5" level="project" />
+    <orderEntry type="library" name="jcodec-javase-0.2.5" level="project" />
   </component>
 </module>
