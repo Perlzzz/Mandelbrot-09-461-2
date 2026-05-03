@@ -4,6 +4,8 @@ import ru.gr0946x.Converter;
 import ru.gr0946x.animation.AnimationManager;
 import ru.gr0946x.animation.KeyFrame;
 
+import java.util.List;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -66,9 +68,40 @@ public class ExcursionWindow extends JDialog {
         btnPanel.add(addFrameBtn);
         btnPanel.add(removeFrameBtn);
 
+        // кнопка рендеринга
+        JButton renderBtn = new JButton("Начать рендеринг видео");
+        renderBtn.addActionListener(e -> {
+            if (animationManager.getKeyFrames().size() < 2) {
+                JOptionPane.showMessageDialog(this,
+                        "Добавьте минимум 2 ключевых кадра!",
+                        "Ошибка", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            int duration;
+            try {
+                duration = Integer.parseInt(durationField.getText().trim());
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this,
+                        "Введите корректное число секунд!",
+                        "Ошибка", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            int fps = 30;
+            int stepsPerTransition = (duration * fps) /
+                    Math.max(1, animationManager.getKeyFrames().size() - 1);
+            List<KeyFrame> frames = animationManager.generateExcursion(stepsPerTransition);
+            // TODO: сохранение видео — задача другого участника
+            JOptionPane.showMessageDialog(this,
+                    "Сгенерировано кадров: " + frames.size(),
+                    "Готово", JOptionPane.INFORMATION_MESSAGE);
+        });
+
+        JPanel bottomPanel = new JPanel(new GridLayout(2, 1, 4, 4));
+        bottomPanel.add(durationPanel);
+        bottomPanel.add(renderBtn);
 
         add(btnPanel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
-        add(durationPanel, BorderLayout.SOUTH);
+        add(bottomPanel, BorderLayout.SOUTH);
     }
 }
