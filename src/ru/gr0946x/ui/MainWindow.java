@@ -1,6 +1,7 @@
 package ru.gr0946x.ui;
 
 import ru.gr0946x.Converter;
+import ru.gr0946x.animation.AnimationManager;
 import ru.gr0946x.ui.fractals.ColorFunction;
 import ru.gr0946x.ui.fractals.ColorSchemes;
 import ru.gr0946x.ui.fractals.Fractal;
@@ -25,6 +26,7 @@ public class MainWindow extends JFrame {
     private Mandelbrot mandelbrot;
     private final Converter conv;
     private ColorFunction selectedColorScheme = ColorSchemes.CLASSIC;
+    private final AnimationManager animationManager = new AnimationManager();
     public MainWindow(){
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(800, 650));
@@ -122,6 +124,16 @@ public class MainWindow extends JFrame {
 
         menuBar.add(fileMenu);
         menuBar.add(editMenu);
+
+        JMenu excursionMenu = new JMenu("Экскурсия");
+        JMenuItem openExcursion = new JMenuItem("Управление экскурсией...");
+        openExcursion.addActionListener(e -> {
+            ExcursionWindow excursionWindow = new ExcursionWindow(this, conv, animationManager);
+            excursionWindow.setVisible(true);
+        });
+        excursionMenu.add(openExcursion);
+        menuBar.add(excursionMenu);
+
         setJMenuBar(menuBar);
     }
 
