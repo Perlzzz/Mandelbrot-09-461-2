@@ -75,7 +75,9 @@ public class FractalPainter implements Painter{
 
         for (int t = 0; t < threadCount; t++) {
             final int startY = t * chunkHeight;
-            final int endY = (t == threadCount - 1) ? h : startY + chunkHeight;
+            final int endY = (t == threadCount - 1) ? h : Math.min(h, startY + chunkHeight);
+
+            if (startY >= h) break;
 
             futures.add(executor.submit(() -> {
                 for (int j = startY; j < endY; j++) {
@@ -116,3 +118,7 @@ public class FractalPainter implements Painter{
 
     }
 
+    public void shutdown() {
+        executor.shutdown();
+    }
+}

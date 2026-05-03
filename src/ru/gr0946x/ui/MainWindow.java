@@ -128,7 +128,7 @@ public class MainWindow extends JFrame {
         JMenu excursionMenu = new JMenu("Экскурсия");
         JMenuItem openExcursion = new JMenuItem("Управление экскурсией...");
         openExcursion.addActionListener(e -> {
-            ExcursionWindow excursionWindow = new ExcursionWindow(this, conv, animationManager);
+            ExcursionWindow excursionWindow = new ExcursionWindow(this, conv, animationManager, (FractalPainter) painter);
             excursionWindow.setVisible(true);
         });
         excursionMenu.add(openExcursion);
