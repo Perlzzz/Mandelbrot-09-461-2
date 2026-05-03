@@ -10,4 +10,5 @@ public interface Painter {
     void setHeight(int height);
 
     void paint(Graphics g);
+    void renderAsync(Runnable oneDone);
 }

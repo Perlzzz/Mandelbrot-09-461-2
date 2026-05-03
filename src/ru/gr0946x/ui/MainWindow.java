@@ -58,13 +58,12 @@ public class MainWindow extends JFrame {
             conv.setXShape(xMin, xMax);
             conv.setYShape(yMin, yMax);
             mandelbrot.updateIterationsByZoom(fractalWidth);
-            mainPanel.repaint();
-
+            ((FractalPainter) painter).renderAsync(() -> mainPanel.repaint());
             // пункт 10
-            double newWidth = xMax - xMin; // новая ширина фрактала
-            mandelbrot.updateIterationsByZoom(newWidth);
-            mainPanel.repaint();
-        });
+//            double newWidth = xMax - xMin; // новая ширина фрактала
+//            mandelbrot.updateIterationsByZoom(newWidth);
+//            ((FractalPainter) painter).renderAsync(() -> mainPanel.repaint());
+            });
         setupMenu();
         setContent();
     }
@@ -116,8 +115,7 @@ public class MainWindow extends JFrame {
                 double[] prev = history.pop();
                 conv.setXShape(prev[0], prev[1]);
                 conv.setYShape(prev[2], prev[3]);
-                mainPanel.repaint();
-            }
+                ((FractalPainter) painter).renderAsync(() -> mainPanel.repaint());            }
         });
         editMenu.add(undo);
 
@@ -134,8 +132,7 @@ public class MainWindow extends JFrame {
         var colorSchemeBox = new JComboBox<>(ColorSchemes.values());
         colorSchemeBox.addActionListener(e -> {
             selectedColorScheme = (ColorFunction) colorSchemeBox.getSelectedItem();
-            mainPanel.repaint();
-        });
+            ((FractalPainter) painter).renderAsync(() -> mainPanel.repaint());        });
 
         gl.setVerticalGroup(gl.createSequentialGroup()
                 .addGap(8)
