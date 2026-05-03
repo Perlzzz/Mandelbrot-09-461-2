@@ -40,7 +40,35 @@ public class ExcursionWindow extends JDialog {
             ));
         });
 
-        add(addFrameBtn, BorderLayout.NORTH);
+        // кнопка удалить
+        JButton removeFrameBtn = new JButton("Удалить выбранный");
+        removeFrameBtn.addActionListener(e -> {
+            int idx = frameList.getSelectedIndex();
+            if (idx != -1) {
+                listModel.remove(idx);
+                animationManager.clearKeyFrames();
+                // пересобираем animationManager из оставшихся строк списка
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        "Выберите кадр для удаления!",
+                        "Ошибка", JOptionPane.WARNING_MESSAGE);
+            }
+        });
+
+        // поле длительности
+        JPanel durationPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        durationPanel.add(new JLabel("Длительность (сек):"));
+        JTextField durationField = new JTextField("10", 5);
+        durationPanel.add(durationField);
+
+        // компоновка
+        JPanel btnPanel = new JPanel(new GridLayout(1, 2, 4, 4));
+        btnPanel.add(addFrameBtn);
+        btnPanel.add(removeFrameBtn);
+
+
+        add(btnPanel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
+        add(durationPanel, BorderLayout.SOUTH);
     }
 }
