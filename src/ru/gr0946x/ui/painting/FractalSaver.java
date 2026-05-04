@@ -166,7 +166,7 @@ public class FractalSaver {
                     "Открыто: " + file.getName(),
                     "Успех", JOptionPane.INFORMATION_MESSAGE);
 
-            panel.repaint();
+            painter.renderAsync(() -> panel.repaint());
             System.out.println("Загружено: xMin=" + xMin + " xMax=" + xMax + " yMin=" + yMin + " yMax=" + yMax);
         } catch (IOException | NumberFormatException e) {
             JOptionPane.showMessageDialog(parent,
