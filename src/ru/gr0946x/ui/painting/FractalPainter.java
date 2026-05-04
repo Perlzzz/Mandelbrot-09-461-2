@@ -55,28 +55,18 @@ public class FractalPainter implements Painter{
         return conv;
     }
 
-    @Override
-    public void renderAsync(Runnable oneDone) {
-        if (rendering) return;
-        rendering = true;
-
+    public BufferedImage renderSync() {
         var w = getWidth();
         var h = getHeight();
+        if (w <= 0 || h <= 0) return null;
 
-        if (w <= 0 || h <= 0) {rendering = false;return;}
-
-        // рисуем в буфер, а не сразу на экран
         BufferedImage image = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
         List<Future<?>> futures = new ArrayList<>();
         int chunkHeight = h / threadCount;
 
-        System.out.println("=== Начало отрисовки. Потоков: " + threadCount + " ===");
-        long startTime = System.currentTimeMillis();
-
         for (int t = 0; t < threadCount; t++) {
             final int startY = t * chunkHeight;
             final int endY = (t == threadCount - 1) ? h : Math.min(h, startY + chunkHeight);
-
             if (startY >= h) break;
 
             futures.add(executor.submit(() -> {
@@ -88,25 +78,30 @@ public class FractalPainter implements Painter{
                         image.setRGB(i, j, colorFunction.getColor(res).getRGB());
                     }
                 }
-                System.out.println("Поток [" + Thread.currentThread().getName() + "] завершён ✓");
             }));
         }
 
+        for (Future<?> f : futures) {
+            try { f.get(); }
+            catch (Exception e) { e.printStackTrace(); }
+        }
+        lastImage = image;
+        return image;
+    }
+
+    @Override
+    public void renderAsync(Runnable oneDone) {
+        if (rendering) return;
+        rendering = true;
+
         executor.submit(() -> {
-            for (Future<?> f : futures) {
-                try { f.get(); }
-                catch (Exception e) { e.printStackTrace(); }
+            try {
+                renderSync();
+            } finally {
+                rendering = false;
+                SwingUtilities.invokeLater(oneDone);
             }
-
-            long elapsed = System.currentTimeMillis() - startTime;
-            System.out.println("=== Отрисовка завершена за " + elapsed + " мс ===\n");
-
-            lastImage = image;
-            rendering = false;
-            // возвращаемся в поток Swing для repaint
-            SwingUtilities.invokeLater(oneDone);
         });
-//        executor.shutdown();
     }
         @Override
         public void paint(Graphics g) {

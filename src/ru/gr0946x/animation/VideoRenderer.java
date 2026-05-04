@@ -49,16 +49,20 @@ public class VideoRenderer {
                 conv.setXShape(frame.getXMin(), frame.getXMax());
                 conv.setYShape(frame.getYMin(), frame.getYMax());
 
-                // 2. Отрисовываем фрактал (используем 3BYTE_BGR для совместимости)
-                BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
-                Graphics g = image.getGraphics();
-                painter.paint(g);
-                g.dispose();
+                // 2. Отрисовываем фрактал СИНХРОННО
+                BufferedImage fractalImage = painter.renderSync();
+                if (fractalImage == null) continue;
 
-                // 3. Добавляем кадр в видео
-                encoder.encodeImage(image);
+                // 3. Копируем в TYPE_3BYTE_BGR (для JCodec)
+                BufferedImage videoFrame = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
+                Graphics2D g2d = videoFrame.createGraphics();
+                g2d.drawImage(fractalImage, 0, 0, width, height, null);
+                g2d.dispose();
 
-                // 4. Уведомляем о прогрессе
+                // 4. Добавляем кадр в видео
+                encoder.encodeImage(videoFrame);
+
+                // 5. Уведомляем о прогрессе
                 if (onProgress != null) {
                     onProgress.accept((double) (i + 1) / frames.size());
                 }
