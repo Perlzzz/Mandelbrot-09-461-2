@@ -64,6 +64,11 @@ public class FractalPainter implements Painter{
         List<Future<?>> futures = new ArrayList<>();
         int chunkHeight = h / threadCount;
 
+
+        System.out.println("=== Начало отрисовки. Потоков: " + threadCount + " ===");
+        long startTime = System.currentTimeMillis();
+
+
         for (int t = 0; t < threadCount; t++) {
             final int startY = t * chunkHeight;
             final int endY = (t == threadCount - 1) ? h : Math.min(h, startY + chunkHeight);
@@ -78,6 +83,8 @@ public class FractalPainter implements Painter{
                         image.setRGB(i, j, colorFunction.getColor(res).getRGB());
                     }
                 }
+                System.out.println("Поток [" + Thread.currentThread().getName() + "] завершён ✓");
+
             }));
         }
 
@@ -86,7 +93,11 @@ public class FractalPainter implements Painter{
             catch (Exception e) { e.printStackTrace(); }
         }
         lastImage = image;
+        long elapsed = System.currentTimeMillis() - startTime;
+        System.out.println("=== Отрисовка завершена за " + elapsed + " мс ===\n");
+
         return image;
+
     }
 
     @Override
@@ -101,6 +112,7 @@ public class FractalPainter implements Painter{
                 rendering = false;
                 SwingUtilities.invokeLater(oneDone);
             }
+
         });
     }
         @Override
