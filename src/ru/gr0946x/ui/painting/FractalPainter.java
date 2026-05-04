@@ -116,7 +116,7 @@ public class FractalPainter implements Painter{
             }
         }
 
-    }
+
 
     public void shutdown() {
         executor.shutdown();
