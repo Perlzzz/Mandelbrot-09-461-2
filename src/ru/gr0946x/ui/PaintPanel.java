@@ -67,9 +67,7 @@ public class PaintPanel extends JPanel {
                         conv.setYShape(conv.getYMin() + dy, conv.getYMax() + dy);
 
                         lastPoint = e.getPoint();
-                        if (painter instanceof FractalPainter fp) {
-                            fp.renderAsync(() -> repaint());
-                        }
+                        fp.renderAsync(() -> repaint());
                     }
                 }
             }
