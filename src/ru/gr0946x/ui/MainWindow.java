@@ -39,6 +39,7 @@ public class MainWindow extends JFrame {
                 (value) -> selectedColorScheme.getColor(value)
         );
         mainPanel = new SelectablePanel(painter);
+        mainPanel.setOnBeforeMove(() -> pushHistory());
         mainPanel.setBackground(Color.WHITE);
         mainPanel.addSelectListener((r)->{
             pushHistory(); // сохраняем перед изменением

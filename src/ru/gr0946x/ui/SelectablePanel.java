@@ -90,4 +90,7 @@ public class SelectablePanel extends PaintPanel{
             g.setPaintMode();
         }
     }
+    public void setOnBeforeMove(Runnable onBeforeMove) {
+        super.setOnBeforeMove(onBeforeMove);
+    }
 }
