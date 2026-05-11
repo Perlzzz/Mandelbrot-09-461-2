@@ -11,6 +11,7 @@ public class PaintPanel extends JPanel {
 
     protected Painter painter;
     private Point lastPoint;
+    private Runnable onBeforeMove; // ← добавили callback
 
     public PaintPanel(Painter painter){
         this.painter = painter;
@@ -33,6 +34,8 @@ public class PaintPanel extends JPanel {
             @Override
             public void mousePressed(MouseEvent e) {
                 if (SwingUtilities.isRightMouseButton(e)) {
+                    // сохраняем историю перед началом сдвига
+                    if (onBeforeMove != null) onBeforeMove.run();
                     lastPoint = e.getPoint();
                 }
 
@@ -89,4 +92,7 @@ public class PaintPanel extends JPanel {
     }
 
 
+    protected void setOnBeforeMove(Runnable onBeforeMove) {
+        this.onBeforeMove = onBeforeMove;
+    }
 }
