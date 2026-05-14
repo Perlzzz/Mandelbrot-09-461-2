@@ -21,7 +21,7 @@ import java.util.ArrayDeque;
 import javax.swing.KeyStroke;
 
 public class MainWindow extends JFrame {
-
+    private JComboBox<ColorSchemes> colorSchemeBox;
     private final SelectablePanel mainPanel;
     private final Painter painter;
     private Mandelbrot mandelbrot;
@@ -66,8 +66,8 @@ public class MainWindow extends JFrame {
 //            mandelbrot.updateIterationsByZoom(newWidth);
 //            ((FractalPainter) painter).renderAsync(() -> mainPanel.repaint());
             });
-        setupMenu();
         setContent();
+        setupMenu();
     }
 
     // каждый элемент — снимок состояния: xMin, xMax, yMin, yMax
@@ -94,7 +94,7 @@ public class MainWindow extends JFrame {
         JMenuItem savePng = new JMenuItem("Сохранить как PNG");
         JMenuItem open = new JMenuItem("Открыть .frac");
 
-        FractalSaver saver = new FractalSaver(this, conv, mandelbrot, (FractalPainter) painter, mainPanel);
+        FractalSaver saver = new FractalSaver(this, conv, mandelbrot, (FractalPainter) painter, mainPanel, colorSchemeBox);
 
         saveFrac.addActionListener(e -> saver.saveFrac());
         saveJpg.addActionListener(e ->  saver.saveImage("jpg"));
@@ -141,7 +141,7 @@ public class MainWindow extends JFrame {
         var gl = new GroupLayout(getContentPane());
         setLayout(gl);
 
-        var colorSchemeBox = new JComboBox<>(ColorSchemes.values());
+        colorSchemeBox = new JComboBox<>(ColorSchemes.values());
         colorSchemeBox.addActionListener(e -> {
             selectedColorScheme = (ColorFunction) colorSchemeBox.getSelectedItem();
             ((FractalPainter) painter).renderAsync(() -> mainPanel.repaint());        });
