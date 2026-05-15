@@ -164,7 +164,7 @@ public class FractalSaver {
             conv.setYShape(yMin, yMax);
             mandelbrot.setMaxIterations(maxIter);            //востановление итераций
 
-            String schemeName = props.getProperty("colorScheme");
+            String schemeName = props.getProperty("colorScheme");  //выбор цветовой схемы
             if (schemeName != null) {
                 for (int i = 0; i < colorSchemeBox.getItemCount(); i++) {
                     if (colorSchemeBox.getItemAt(i).toString().equals(schemeName)) {
